@@ -13,6 +13,12 @@ type FileLocations struct {
 
 func main() {
 
+	// Get .epub file
+	// Create temp directory to store unzipped files into
+	// Unzip .epub contents into temp directory
+	// Edit metadata
+	// zip files from temp directory into new .epub file
+
 	fileName := "songbird"
 	temp := FileLocations{
 		src:  fileName,
@@ -41,4 +47,19 @@ func ZipHelper(src string, ext string) error {
 		return err
 	}
 	return nil
+}
+
+func CreateTempDir() {
+	tempDir, err := ioutil.TempDir("", "go-epub")
+	defer func() {
+		if err := os.RemoveAll(tempDir); err != nil {
+			panic(fmt.Sprintf("Error removing temp directory: %s", err))
+			return e go
+		}
+	}()
+	if err != nil {
+		panic(fmt.Sprintf("Error creating temp directory: %s", err))
+		return err
+	}
+	return tempDir
 }
