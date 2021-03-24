@@ -134,34 +134,34 @@ func Zip(filename string, ext string) error {
 		return nil
 	}
 
-	func Zipdraft(filename string, ext string) error {
-		file, err := os.Create(filename + ext)
-		if err != nil {
-			log.Fatal("os.Create(filename) error: ", err)
-		}
-		defer file.Close()
+	// func Zipdraft(filename string, ext string) error {
+	// 	file, err := os.Create(filename + ext)
+	// 	if err != nil {
+	// 		log.Fatal("os.Create(filename) error: ", err)
+	// 	}
+	// 	defer file.Close()
 
-		w := zip.NewWriter(file)
-		defer w.Close()
+	// 	w := zip.NewWriter(file)
+	// 	defer w.Close()
 
-		walker := func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
+	// 	walker := func(path string, info os.FileInfo, err error) error {
+	// 		if err != nil {
+	// 			return err
+	// 		}
 
-			relativePath, err := filepath.Rel(filename, path)
-			relativePath = filepath.ToSlash(relativePath)
-			if err != nil {
-				panic(fmt.Sprintf("Error clsing .zip file: %s", err))
-			}
+	// 		relativePath, err := filepath.Rel(filename, path)
+	// 		relativePath = filepath.ToSlash(relativePath)
+	// 		if err != nil {
+	// 			panic(fmt.Sprintf("Error clsing .zip file: %s", err))
+	// 		}
 
-			// Only include regular files and not directories
-			if !info.Mode().IsRegular() {
-				return nil
-			}
-			
-		}
-	}
+	// 		// Only include regular files and not directories
+	// 		if !info.Mode().IsRegular() {
+	// 			return nil
+	// 		}
+
+	// 	}
+	// }
 
 	err = filepath.Walk(filename, walker)
 	if err != nil {
