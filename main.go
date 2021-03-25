@@ -47,7 +47,14 @@ func Write() error {
 		return err
 	}
 
-	// Edit metadata
+	// Get absolute filepath for temp directory
+	tempDirAbsPath, err := filepath.Abs(tempDir)
+	if err != nil {
+		return err
+	}
+
+	// // Edit metadata
+	editMetadata(tempDirAbsPath)
 
 	// zip files from temp directory into new .epub file
 	writeEpub(tempDir, fileName+".epub")
