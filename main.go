@@ -1,11 +1,11 @@
 package main
 
 import (
-	// "log"
-	// "strings"
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 type FileLocations struct {
@@ -20,49 +20,15 @@ func main() {
 
 }
 
-// 	// Get .epub file
-// 	// Create temp directory to store unzipped files into
-// 	// Unzip .epub contents into temp directory
-// 	// Edit metadata
-// 	// zip files from temp directory into new .epub file
-
-// 	fileName := "songbird"
-// 	temp := FileLocations{
-// 		src:  fileName,
-// 		ext:  ".epub",
-// 		dest: fileName,
-// 	}
-
-// 	// Create temp directory
-// 	tempDir, err := ioutil.TempDir("", "go-epub")
-// 	defer func() {
-// 		if err := os.RemoveAll(tempDir); err != nil {
-// 			panic(fmt.Sprintf("Error removing temp directory: %s", err))
-// 		}
-// 	}()
-// 	if err != nil {
-// 		panic(fmt.Sprintf("Error creating temp directory: %s", err))
-// 	}
-
-// 	// Unzip the zip/epub file
-// 	UnzipHelper(temp.src, temp.ext, tempDir)
-
-// 	// Write epub file
-// 	writeEpub(tempDir, temp.src+temp.ext)
-
-// 	// // Zip the modified directory
-// 	// ZipHelper(temp.src, temp.ext)
-// }
-
 func Write() error {
 
-	// Get .epub file
-	fileName := "songbird"
-	temp := FileLocations{
-		src:  fileName,
-		ext:  ".epub",
-		dest: fileName,
-	}
+	// Get file name
+
+	// While running "go run main.go zip.go write.go -- [name_of_file].epub" use Args[2]
+	// For final production, use Args[1]
+	fileName := os.Args[2]
+	// Remove extension
+	fileName = strings.TrimSuffix(fileName, filepath.Ext(fileName))
 
 	// Create temp directory to store unzipped files into
 	tempDir, err := ioutil.TempDir("", "go-epub")
@@ -76,7 +42,7 @@ func Write() error {
 	}
 
 	// Unzip .epub contents into temp directory
-	Unzip(temp.src, temp.ext, tempDir)
+	unzipEpub(fileName, tempDir)
 	if err != nil {
 		return err
 	}
@@ -84,24 +50,8 @@ func Write() error {
 	// Edit metadata
 
 	// zip files from temp directory into new .epub file
-	writeEpub(tempDir, temp.src+temp.ext)
+	writeEpub(tempDir, fileName+".epub")
 
 	return nil
 
-}
-
-func UnzipHelper(src string, ext string, dest string) error {
-	_, err := Unzip(src, ext, dest)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func ZipHelper(src string, ext string) error {
-	err := Zip(src, ext)
-	if err != nil {
-		return err
-	}
-	return nil
 }

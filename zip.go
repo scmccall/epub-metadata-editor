@@ -4,7 +4,6 @@ import (
 	"archive/zip"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -12,9 +11,9 @@ import (
 
 //  code from from https://golangcode.com/unzip-files-in-go/
 
-func Unzip(src string, ext string, dest string) ([]string, error) {
+func unzipEpub(src string, dest string) ([]string, error) {
 
-	file := src + ext
+	file := src + ".epub"
 
 	var filenames []string
 
@@ -72,100 +71,4 @@ func Unzip(src string, ext string, dest string) ([]string, error) {
 	os.Remove(file)
 
 	return filenames, nil
-}
-
-func Zip(filename string, ext string) error {
-	// Creates .epub file
-	file, err := os.Create(filename + ext)
-	if err != nil {
-		log.Fatal("os.Create(filename) error: ", err)
-	}
-	defer file.Close()
-
-	w := zip.NewWriter(file)
-	defer w.Close()
-
-	walker := func(path string, info os.FileInfo, err error) error {
-		fmt.Println("Crawling: " + path)
-		if err != nil {
-			return err
-		}
-		if info.IsDir() {
-			return nil
-		}
-		file, err := os.Open(path)
-		if err != nil {
-			return err
-		}
-		defer file.Close()
-
-		switch {
-		case info.IsDir():
-			// f, err := w.Create(path + "/")
-			f, err := w.Create(path)
-			if err != nil {
-				return err
-			}
-			_, err = io.Copy(f, file)
-			if err != nil {
-				return err
-			}
-		default:
-			f, err := w.Create(path)
-			if err != nil {
-				return err
-			}
-			_, err = io.Copy(f, file)
-			if err != nil {
-				return err
-			}
-		}
-
-		// f, err := w.Create(path)
-		// if err != nil {
-		// 	return err
-		// }
-
-		// _, err = io.Copy(f, file)
-		// if err != nil {
-		// 	return err
-		// }
-
-		return nil
-	}
-
-	// func Zipdraft(filename string, ext string) error {
-	// 	file, err := os.Create(filename + ext)
-	// 	if err != nil {
-	// 		log.Fatal("os.Create(filename) error: ", err)
-	// 	}
-	// 	defer file.Close()
-
-	// 	w := zip.NewWriter(file)
-	// 	defer w.Close()
-
-	// 	walker := func(path string, info os.FileInfo, err error) error {
-	// 		if err != nil {
-	// 			return err
-	// 		}
-
-	// 		relativePath, err := filepath.Rel(filename, path)
-	// 		relativePath = filepath.ToSlash(relativePath)
-	// 		if err != nil {
-	// 			panic(fmt.Sprintf("Error clsing .zip file: %s", err))
-	// 		}
-
-	// 		// Only include regular files and not directories
-	// 		if !info.Mode().IsRegular() {
-	// 			return nil
-	// 		}
-
-	// 	}
-	// }
-
-	err = filepath.Walk(filename, walker)
-	if err != nil {
-		log.Fatal("filepath.Walk error: ", err)
-	}
-	return err
 }
